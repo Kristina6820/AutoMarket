@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+<h2>Adaugă o mașină</h2>
+
+{% if error %}
+<p style="color:red;">{{ error }}</p>
+{% endif %}
+
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <label>Nume mașină</label>
+    <input type="text" name="name" required>
+
+    <label>An</label>
+    <input type="number" name="year">
+
+    <label>Km</label>
+    <input type="text" name="km">
+
+    <label>Combustibil</label>
+    <input type="text" name="fuel">
+
+    <label>Cutie de viteze</label>
+    <input type="text" name="transmission">
+
+    <label>Putere</label>
+    <input type="number" name="horsepower">
+
+    <label>Tip</label>
+    <input type="text" name="type">
+
+    <label>Preț</label>
+    <input type="text" step="0.01" name="price">
+
+    <label>Descriere</label>
+    <textarea name="description"></textarea>
+
+    <label>Poză principală</label>
+    <input type="file" name="image">
+
+    <label>Poză secundare</label>
+    <input type="file" name="poze" multiple>
+
+    <button type="submit">Adaugă mașina</button>
+</form>
+
+{% endblock %}

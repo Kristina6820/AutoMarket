@@ -1,0 +1,339 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ro" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}AutoMarket{% endblock %}</title>
+
+    <link rel="icon" type="image/png" href="{% static 'logo/logo2.png' %}">
+
+
+    <style>
+        :root {
+            --bg: #0b0f19;
+            --bg-elevated: #111625;
+            --text: #f1f1f1;
+            --text-muted: #c5c9e4;
+            --accent: #ffcc00;
+            --nav-bg: rgba(5, 8, 20, 0.7);
+            --card-border: rgba(255,255,255,0.09);
+        }
+
+        :root[data-theme="light"] {
+            --bg: #f5f7fa;
+            --bg-elevated: #ffffff;
+            --text: #111827;
+            --text-muted: #4b5563;
+            --accent: #f59e0b;
+            --nav-bg: rgba(255,255,255,0.9);
+            --card-border: rgba(15,23,42,0.08);
+        }
+
+        body {
+            margin: 0;
+            font-family: "Poppins", "Segoe UI", sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        /* ---------------- NAVBAR ---------------- */
+        nav {
+            background: var(--nav-bg);
+            backdrop-filter: blur(15px);
+            padding: 0 50px;              /* fără padding vertical */
+            height: 70px;                 /* fixăm înălțimea */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;          /* aliniază tot la centru */
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.4);
+
+        }
+
+        nav .logo {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(90deg,#ffffff,#6aa0ff);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 26px;
+            align-items: center;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 15px;
+            transition: .2s;
+            font-weight: 500;
+        }
+
+        nav ul li a:hover {
+            color: var(--text);
+        }
+
+        .theme-toggle {
+            border-radius: 999px;
+            border: 1px solid rgba(148,163,184,0.6);
+            padding: 6px 12px;
+            font-size: 13px;
+            background: transparent;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        main {
+            min-height: 80vh;
+            padding: 0;
+        }
+
+        .logo {
+    display: flex;
+    align-items: center;
+}
+
+        .nav-logo {
+            height: 120px;          /* ajustează cât de mare vrei */
+            width: auto;
+            object-fit: contain;
+            display: block;
+            filter: drop-shadow(0 0 6px rgba(0,0,0,0.6));
+            transition: transform 0.2s ease, filter 0.2s ease;
+        }
+
+        .nav-logo:hover {
+            transform: translateY(-1px) scale(1.03);
+            filter: drop-shadow(0 0 10px rgba(255,255,255,0.35));
+        }
+
+
+        /* -------------- FOOTER PREMIUM -------------- */
+        footer {
+            background: #061024;
+            padding: 60px 0 30px;
+            color: #dce3f5;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .footer-container {
+            max-width: 1400px;
+            margin: auto;
+            padding: 0 35px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 40px;
+        }
+
+        footer h3 {
+            font-size: 18px;
+            margin-bottom: 18px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        footer p {
+            font-size: 14px;
+            line-height: 1.7;
+            opacity: .85;
+        }
+
+        .f-link {
+            display: block;
+            margin-bottom: 8px;
+            color: #dce3f5;
+            font-size: 14px;
+            opacity: .9;
+            text-decoration: none;
+            transition: .2s;
+        }
+
+        .f-link:hover {
+            color: var(--accent);
+            opacity: 1;
+            padding-left: 4px;
+        }
+
+        .footer-logo {
+            height: 60px;
+            filter: drop-shadow(0 0 10px rgba(255,255,255,0.25));
+            margin-bottom: 18px;
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .f-social {
+            width: 38px;
+            height: 38px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            font-size: 16px;
+            background: #0d1e3d;
+            border: 1px solid rgba(255,255,255,0.18);
+            color: #fff;
+            transition: .25s;
+        }
+
+        .f-social:hover {
+            background: var(--accent);
+            color: #111;
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 45px;
+            padding-top: 25px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            font-size: 14px;
+            color: #9aa7c4;
+        }
+
+        .footer-bottom span {
+            color: var(--accent);
+            font-weight: 700;
+        }
+    </style>
+
+    {% block extra_head %}{% endblock %}
+</head>
+
+<body>
+
+<nav>
+    <a href="{% url 'home' %}" class="logo">
+    <img src="/static/logo/logo3.png" class="nav-logo">
+</a>
+
+    <ul>
+        <li><a href="{% url 'cars' %}">Mașini</a></li>
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li><a href="{% url 'add_car' %}">Adaugă</a></li>
+
+        {% if user.is_authenticated %}
+            <li><a href="{% url 'account' %}">Contul meu</a></li>
+            <li><a href="{% url 'logout' %}">Logout</a></li>
+        {% else %}
+            <li><a href="{% url 'login' %}">Login</a></li>
+            <li><a href="{% url 'register' %}">Înregistrare</a></li>
+        {% endif %}
+
+        <li>
+            <button id="themeToggle" class="theme-toggle">🌙 Dark</button>
+        </li>
+    </ul>
+</nav>
+
+<main>
+    {% block content %}{% endblock %}
+</main>
+
+<!-- ---------------- FOOTER FINAL PREMIUM ---------------- -->
+
+<footer>
+    <div class="footer-container">
+
+        <!-- Col 1 -->
+        <div>
+            <img src= '/media/cars/17_35_51.png' class="footer-logo">
+
+            <p>
+                AutoMarket – din 2010 oferim vehicule verificate, cu garanție extinsă,
+                finanțare flexibilă și transparență totală.
+            </p>
+
+            <div class="footer-social">
+                <a href="#" class="f-social"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="f-social"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="f-social"><i class="fab fa-youtube"></i></a>
+                <a href="#" class="f-social"><i class="fab fa-tiktok"></i></a>
+            </div>
+        </div>
+
+        <!-- Col 2 -->
+        <div>
+            <h3>Informații</h3>
+            <a href="#" class="f-link">Termeni și Condiții</a>
+            <a href="#" class="f-link">Politica de cookie</a>
+            <a href="#" class="f-link">Confidențialitate</a>
+
+        </div>
+
+        <!-- Col 3 -->
+        <div>
+            <h3>Linkuri utile</h3>
+            <a href="{% url 'cars' %}" class="f-link">Mașini</a>
+            <a href="#" class="f-link">Leasing & Credite</a>
+            <a href="#" class="f-link">Auto la comandă</a>
+            <a href="#" class="f-link">Buyback</a>
+            <a href="#" class="f-link">Contact</a>
+        </div>
+
+        <!-- Col 4 -->
+        <div>
+            <h3>Program de lucru</h3>
+            <p>
+                Luni – Vineri: 09:00 – 19:00<br>
+                Sâmbătă: 09:00 – 17:00<br>
+                Duminică: Închis
+            </p>
+
+            <h3 style="margin-top:18px;">Urmărește-ne</h3>
+            <div class="footer-social">
+                <a href="#" class="f-social"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="f-social"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="f-social"><i class="fab fa-youtube"></i></a>
+                <a href="#" class="f-social"><i class="fab fa-tiktok"></i></a>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="footer-bottom">
+        © {% now "Y" %} <span>AUTOMARKET</span> — Toate drepturile rezervate.
+    </div>
+</footer>
+
+{% block scripts %}{% endblock %}
+
+<script>
+    const root = document.documentElement;
+    const btn = document.getElementById('themeToggle');
+
+    function applyTheme(th) {
+        root.setAttribute('data-theme', th);
+        btn.textContent = th === 'light' ? '🌙 Dark' : '☀️ Light';
+        localStorage.setItem('theme', th);
+    }
+
+    applyTheme(localStorage.getItem('theme') || 'dark');
+
+    btn.addEventListener('click', () => {
+        const newTheme = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        applyTheme(newTheme);
+    });
+</script>
+
+</body>
+
+</html>

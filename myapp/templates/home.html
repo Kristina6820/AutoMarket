@@ -1,0 +1,421 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}AutoMarket — Acasă{% endblock %}
+
+{% block extra_head %}
+<style>
+    body { overflow-x:hidden; }
+
+    /* HERO VIDEO BACKGROUND */
+    .hero {
+        position: relative;
+        height: 90vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        color: #fff;
+        overflow: hidden;
+    }
+
+    .hero video {
+        z-index: -1;
+        position:absolute;
+        inset:0;
+        width:100%;
+        height:100%;
+        object-fit:cover;
+        filter:brightness(0.35);
+        
+    }
+
+    .hero-overlay {
+        position:relative;
+        z-index:2;
+        max-width:900px;
+        padding:0 20px;
+    }
+
+    .hero h1 {
+        font-size:64px;
+        font-weight:900;
+        margin-bottom:10px;
+        background:linear-gradient(90deg,#ffffff,#c2cffd);
+        -webkit-background-clip:text;
+        background-clip:text;
+        -webkit-text-fill-color:transparent;
+    }
+
+    .hero p {
+        font-size:20px;
+        opacity:.9;
+        margin-bottom:30px;
+    }
+
+    .cta-btn {
+        padding:16px 40px;
+        font-size:18px;
+        font-weight:700;
+        background:var(--accent);
+        border-radius:14px;
+        color:#000;
+        text-decoration:none;
+        display:inline-block;
+        margin-bottom:20px;
+    }
+
+    /* LIVE SEARCH */
+    .search-box {
+        margin-top:10px;
+        display:flex;
+        justify-content:center;
+        gap:6px;
+    }
+    .search-box input {
+        width:420px;
+        max-width:80vw;
+        padding:12px 16px;
+        border-radius:12px 0 0 12px;
+        border:1px solid rgba(255,255,255,0.4);
+        background:rgba(15,23,42,0.8);
+        color:#fff;
+    }
+    .search-box button {
+        padding:12px 18px;
+        border-radius:0 12px 12px 0;
+        border:none;
+        background:#6a8bff;
+        color:#fff;
+        font-weight:700;
+        cursor:pointer;
+    }
+
+    .live-results {
+        position:absolute;
+        left:50%;
+        transform:translateX(-50%);
+        margin-top:8px;
+        width:440px;
+        max-width:90vw;
+        background:rgba(15,23,42,0.95);
+        border-radius:12px;
+        border:1px solid rgba(148,163,184,0.5);
+        max-height:260px;
+        overflow-y:auto;
+        display:none;
+        z-index:5;
+    }
+    .live-results a {
+        display:block;
+        padding:8px 12px;
+        text-decoration:none;
+        color:#e5e7eb;
+        font-size:14px;
+    }
+    .live-results a:hover {
+        background:rgba(55,65,81,0.85);
+    }
+
+    /* 3D CAROUSEL */
+    .carousel-3d-wrapper {
+        max-width:1400px;
+        margin:40px auto 0;
+        perspective:1200px;
+    }
+    .carousel-3d {
+        display:flex;
+        gap:26px;
+        transform-style:preserve-3d;
+        animation:spin 28s linear infinite;
+    }
+    .carousel-item {
+        flex:0 0 320px;
+        background:var(--bg-elevated);
+        border-radius:18px;
+        box-shadow:0 12px 28px rgba(0,0,0,0.6);
+        overflow:hidden;
+        transform-origin:center center;
+    }
+    .carousel-item img {
+        width:100%;
+        height:200px;
+        object-fit:cover;
+    }
+    .carousel-item div {
+        padding:12px 14px 16px;
+        font-size:14px;
+    }
+    @keyframes spin {
+        from { transform:rotateY(0deg); }
+        to   { transform:rotateY(-360deg); }
+    }
+
+    /* ADVANTAGES */
+    .advantages {
+        max-width:1300px;
+        margin:60px auto;
+        display:grid;
+        grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+        gap:25px;
+    }
+    .adv {
+        background:rgba(255,255,255,0.05);
+        border:1px solid rgba(255,255,255,0.08);
+        padding:28px;
+        border-radius:20px;
+        text-align:center;
+        backdrop-filter:blur(10px);
+        box-shadow:0 10px 30px rgba(0,0,0,0.5);
+    }
+    .adv-icon {font-size:40px;margin-bottom:10px;}
+    .adv h3 {font-size:20px;margin-bottom:6px;}
+
+    /* FEATURED + FAVORITE HEART */
+    .section-title {
+        font-size:32px;
+        font-weight:800;
+        text-align:center;
+        margin:40px auto 20px;
+    }
+    .featured-grid {
+        max-width:1300px;
+        margin:auto;
+        display:grid;
+        grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+        gap:30px;
+    }
+    .car-card-home {
+        background:var(--bg-elevated);
+        border-radius:18px;
+        overflow:hidden;
+        box-shadow:0 15px 30px rgba(0,0,0,0.55);
+        transition:.25s;
+        text-decoration:none;
+        color:var(--text);
+        position:relative;
+    }
+    .car-card-home:hover { transform:translateY(-8px); }
+    .car-card-home img { width:100%; height:200px; object-fit:cover; }
+
+    .fav-heart {
+        position:absolute;
+        top:10px; right:10px;
+        font-size:20px;
+        cursor:pointer;
+        text-shadow:0 0 8px rgba(0,0,0,.7);
+    }
+    .fav-heart.favorit { color:#ff4b5c; }
+
+    .car-info-home { padding:16px 18px 18px; }
+    .car-info-home h4{font-size:20px;margin-bottom:4px;}
+    .car-info-home .meta{font-size:13px;opacity:.75;margin-bottom:8px;}
+    .car-info-home .price{font-size:22px;font-weight:800;color:var(--accent);}
+
+    /* BLOG / NEWS */
+    .blog-section { max-width:1200px; margin:80px auto; }
+    .blog-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:24px; }
+    .blog-card{ background:var(--bg-elevated); padding:20px; border-radius:16px; box-shadow:0 10px 24px rgba(0,0,0,.55); }
+    .blog-card h3{margin-bottom:8px;font-size:18px;}
+    .blog-card p{font-size:14px;opacity:.8;}
+
+    /* FINANCIAL OFFERS */
+    .finance-section{
+        max-width:1200px;margin:70px auto;text-align:center;
+    }
+    .finance-grid{
+        margin-top:20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:22px;
+    }
+    .fin-card{
+        background:var(--bg-elevated);padding:22px;border-radius:18px;box-shadow:0 10px 26px rgba(0,0,0,.55);
+        font-size:14px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- HERO CU VIDEO + LIVE SEARCH -->
+<div class="hero">
+    <video autoplay muted loop playsinline>
+        <!-- Poți înlocui cu un video propriu în static/ -->
+        <source src="https://cdn.coverr.co/videos/coverr-driving-on-an-empty-road-8125/1080p.mp4" type="video/mp4">
+    </video>
+
+    <div class="hero-overlay">
+        <h1>Găsește mașina perfectă</h1>
+        <p>Mașini premium, verificate, garantate — tot ce ai nevoie într-un singur loc.</p>
+        <a href="{% url 'cars' %}" class="cta-btn">Vezi mașinile →</a>
+
+        <div class="search-box">
+            <input type="text" id="liveSearch" placeholder="Caută rapid o marcă sau un model...">
+            <button type="button" onclick="triggerSearch()">Caută</button>
+        </div>
+        <div id="liveResults" class="live-results"></div>
+    </div>
+</div>
+
+<!-- 3D CAROUSEL CU MASINI FEATURED -->
+<div class="carousel-3d-wrapper">
+    <div class="carousel-3d">
+        {% for c in featured %}
+        <div class="carousel-item">
+            <img src="{{ c.main_image.url }}" alt="{{ c.brand }} {{ c.model }}">
+            <div>
+                <strong>{{ c.brand }} {{ c.model }}</strong><br>
+                {{ c.Year }} • {{ c.Km }} km • {{ c.Fuel }}<br>
+                <span style="color:var(--accent);font-weight:700;">{{ c.Price }} €</span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- AVANTAJE -->
+<div class="advantages">
+    <div class="adv"><div class="adv-icon">🔒</div><h3>Garanție inclusă</h3><p>Verificare tehnică completă.</p></div>
+    <div class="adv"><div class="adv-icon">🛠️</div><h3>Revizie completă</h3><p>Service premium înainte de livrare.</p></div>
+    <div class="adv"><div class="adv-icon">🏆</div><h3>Dealer autorizat</h3><p>Doar parteneri certificați.</p></div>
+    <div class="adv"><div class="adv-icon">⚡</div><h3>Proces ultra-rapid</h3><p>Alegi, vezi, cumperi simplu.</p></div>
+</div>
+
+<!-- MASINI RECOMANDATE + FAVORITE -->
+<div class="section-title">Mașini recomandate pentru tine</div>
+<div class="featured-grid">
+    {% for c in featured %}
+    <div class="car-card-home" data-car-id="{{ c.id }}">
+        
+        <a href="{% url 'car_details' c.id %}">
+            <img src="{{ c.main_image.url }}" alt="{{ c.brand }} {{ c.model }}">
+            <div class="car-info-home">
+                <h4>{{ c.brand }} {{ c.model }}</h4>
+                <div class="meta">{{ c.Year }} • {{ c.Km }} km • {{ c.Fuel }}</div>
+                <div class="price">{{ c.Price }} €</div>
+            </div>
+        </a>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- BLOG AUTO + ȘTIRI (AI poate genera conținutul ulterior) -->
+<div class="blog-section">
+    <div class="section-title">Blog auto & știri</div>
+    <div class="blog-grid">
+        <div class="blog-card">
+            <h3>Tendințe 2025 în mașini hibride</h3>
+            <p>Analiză asupra celor mai noi modele și tehnologii de propulsie.</p>
+        </div>
+        <div class="blog-card">
+            <h3>Ghid de cumpărare pentru mașini rulate</h3>
+            <p>La ce trebuie să fii atent când alegi o mașină second-hand.</p>
+        </div>
+        <div class="blog-card">
+            <h3>De ce este important istoricul de service</h3>
+            <p>Îți explicăm cum să eviți surprizele neplăcute.</p>
+        </div>
+    </div>
+</div>
+
+<!-- OFERTE FINANCIARE / RATE AUTO -->
+<div class="finance-section">
+    <div class="section-title">Oferte financiare & rate</div>
+    <div class="finance-grid">
+        <div class="fin-card">
+            <h3>Leasing pentru persoane fizice</h3>
+            <p>Rate fixe, avans minim, perioadă flexibilă până la 5 ani.</p>
+        </div>
+        <div class="fin-card">
+            <h3>Credit auto rapid</h3>
+            <p>Aprobarea în 24h prin partenerii noștri financiari.</p>
+        </div>
+        <div class="fin-card">
+            <h3>Flote și companii</h3>
+            <p>Ofertă personalizată pentru firme și flote auto.</p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // === LIVE SEARCH AJAX ===
+    const input = document.getElementById('liveSearch');
+    const box   = document.getElementById('liveResults');
+
+    function renderResults(data) {
+        if (!data.results || !data.results.length) {
+            box.style.display = 'none';
+            box.innerHTML = '';
+            return;
+        }
+        box.innerHTML = data.results.map(r =>
+            `<a href=\"${r.url}\">${r.brand} ${r.model} • ${r.year} • ${r.price} €</a>`
+        ).join('');
+        box.style.display = 'block';
+    }
+
+    function doSearch(q) {
+        if (!q.trim()) { box.style.display='none'; box.innerHTML=''; return; }
+        fetch(`/api/search-cars/?q=${encodeURIComponent(q)}`)
+            .then(r => r.json())
+            .then(renderResults)
+            .catch(() => { box.style.display='none'; });
+    }
+
+    function triggerSearch() {
+        doSearch(input.value);
+    }
+
+    input.addEventListener('input', (e) => {
+        doSearch(e.target.value);
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!box.contains(e.target) && !input.contains(e.target)) {
+            box.style.display = 'none';
+        }
+    });
+
+    // === FAVORITE SYSTEM (localStorage) ===
+    const FAV_KEY = 'favorite_cars';
+
+    function getFavs(){
+        try { return JSON.parse(localStorage.getItem(FAV_KEY)) || []; }
+        catch { return []; }
+    }
+    function saveFavs(arr){
+        localStorage.setItem(FAV_KEY, JSON.stringify(arr));
+    }
+
+    function syncHearts(){
+        const favs = getFavs();
+        document.querySelectorAll('.car-card-home').forEach(card => {
+            const id = parseInt(card.dataset.carId);
+            const heart = card.querySelector('.fav-heart');
+            if (favs.includes(id)) {
+                heart.classList.add('favorit');
+                heart.textContent = '❤';
+            } else {
+                heart.classList.remove('favorit');
+                heart.textContent = '♡';
+            }
+        });
+    }
+
+    function toggleFav(ev, id){
+        ev.preventDefault();
+        ev.stopPropagation();
+        let favs = getFavs();
+        if (favs.includes(id)) {
+            favs = favs.filter(x => x !== id);
+        } else {
+            favs.push(id);
+        }
+        saveFavs(favs);
+        syncHearts();
+    }
+
+    document.addEventListener('DOMContentLoaded', syncHearts);
+</script>
+{% endblock %}

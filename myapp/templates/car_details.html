@@ -1,0 +1,580 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ car.Brand }} {{ car.Model }} — Detalii{% endblock %}
+
+{% block extra_head %}
+<style>
+
+/* ===== PAGE BASE ===== */
+body {
+    background: #070a14;
+}
+
+.page {
+    max-width: 1450px;
+    margin: 30px auto 80px;
+    padding: 0 20px;
+    color: #f4f6ff;
+    animation: fadePage .6s ease-out;
+}
+
+@keyframes fadePage {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== HERO GRID ===== */
+.hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    gap: 34px;
+    margin-bottom: 35px;
+}
+
+.card {
+    background: linear-gradient(135deg, #111829, #0b0f1c);
+    border-radius: 22px;
+    padding: 20px 22px;
+    box-shadow: 0 18px 45px rgba(0,0,0,.6);
+    position: relative;
+    overflow: hidden;
+}
+
+.card::before {
+    content:"";
+    position:absolute;
+    inset:0;
+    background:radial-gradient(circle at top right,rgba(255,255,255,.07),transparent 60%);
+    pointer-events:none;
+}
+
+/* BADGES */
+.badges {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+}
+
+.badge {
+    padding: 5px 12px;
+    border-radius: 999px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    font-weight: 600;
+}
+
+.badge-new { background:#00d36b; }
+.badge-used { background:#2c3846; }
+.badge-sale { background:#ff4444; }
+.badge-id { background:#1d2437; }
+
+/* ===== GALLERY ===== */
+
+.gallery {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto 10px auto;
+}
+
+/* cutie mai mică, modernă */
+.gallery-main {
+    position: relative;
+    margin-bottom: 12px;
+    overflow: hidden;
+    border-radius: 18px;
+    background: #000;
+    height: 430px;               /* nu mai e uriașă */
+    box-shadow: 0 0 25px rgba(0,0,0,0.4);
+}
+
+.gallery-main img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition:.4s ease;
+}
+
+.gallery-main:hover img {
+    transform: scale(1.05);
+}
+
+.gallery-top {
+    position:absolute;
+    top:16px;
+    left:16px;
+    background:rgba(0,0,0,.55);
+    padding:6px 12px;
+    border-radius:999px;
+    font-size:12px;
+}
+
+.gallery-actions {
+    position:absolute;
+    bottom:16px;
+    right:16px;
+    display:flex;
+    gap:8px;
+}
+
+.ghost-btn {
+    background:rgba(0,0,0,.5);
+    padding:6px 14px;
+    border-radius:999px;
+    border:1px solid rgba(255,255,255,.35);
+    color:#fff;
+    cursor:pointer;
+    font-size:12px;
+    backdrop-filter:blur(6px);
+    transition:.2s;
+}
+
+.ghost-btn:hover { background:rgba(255,255,255,.1); }
+
+/* thumbs sub poză, scroll-orizontal dacă sunt multe */
+
+.gallery-thumbs {
+    margin-top: 8px;
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 6px 2px 10px 2px;
+}
+
+.gallery-thumbs::-webkit-scrollbar {
+    height: 6px;
+}
+.gallery-thumbs::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 999px;
+}
+
+.gallery-thumbs img {
+    width: 100px;
+    height: 68px;
+    object-fit: cover;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: .22s;
+    opacity: .55;
+    border: 2px solid transparent;
+    flex-shrink: 0;
+}
+
+.gallery-thumbs img:hover {
+    opacity: 1;
+    transform: translateY(-2px);
+}
+
+.gallery-thumbs img.active-thumb {
+    opacity: 1;
+    border-color: #ffcc00;
+    box-shadow: 0 0 10px rgba(255,204,0,.5);
+}
+
+/* ===== SUMMARY ===== */
+.summary-title {
+    font-size:32px;
+    font-weight:800;
+    margin-bottom:6px;
+}
+
+.summary-sub {
+    font-size:15px;
+    opacity:.8;
+    margin-bottom:18px;
+}
+
+.summary-pills {
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-bottom:18px;
+}
+
+.pill {
+    padding:5px 12px;
+    border-radius:999px;
+    background:rgba(255,255,255,.05);
+    font-size:12px;
+}
+
+.price-box {
+    font-size:38px;
+    font-weight:900;
+    color:#ffdd55;
+    margin-bottom:16px;
+}
+
+.old-price {
+    text-decoration:line-through;
+    color:#9aa0bb;
+    font-size:16px;
+    margin-left:8px;
+}
+
+.actions {
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+}
+
+.btn-big {
+    background:linear-gradient(90deg,#ffdf5a,#ffb800);
+    padding:14px 28px;
+    border-radius:999px;
+    font-size:15px;
+    font-weight:800;
+    color:#000;
+    text-decoration:none;
+    box-shadow:0 12px 30px rgba(255,200,0,.45);
+}
+
+.btn-line {
+    padding:10px 22px;
+    border:1px solid rgba(255,255,255,.4);
+    border-radius:999px;
+    cursor:pointer;
+    background:transparent;
+}
+
+/* ===== similar cards etc. rămân cum erau ===== */
+
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="page">
+
+    <!-- ===================== HERO TOP ===================== -->
+    <div class="hero">
+
+        <!-- ===== LEFT: GALLERY ===== -->
+        <div class="card">
+
+            <div class="badges">
+                {% if car.is_new %}
+                    <span class="badge badge-new">Nou</span>
+                {% else %}
+                    <span class="badge badge-used">Rulat</span>
+                {% endif %}
+
+                {% if car.Price > 3000 %}
+                    <span class="badge badge-sale">Reducere</span>
+                {% endif %}
+            </div>
+
+            <div class="gallery">
+                <div class="gallery-main">
+                    <img id="mainImg" src="{{ car.Image.url }}" alt="Foto {{ car.Name }}">
+
+                    <div class="gallery-top">
+                        {{ car.Year }} • {{ car.Km }} km
+                    </div>
+
+                    <div class="gallery-actions">
+                        <button class="ghost-btn" onclick="openFs()">🔍 Fullscreen</button>
+                        <button class="ghost-btn" onclick="toggleFavorite()">❤ Favorite</button>
+                    </div>
+                </div>
+
+                <!-- thumbs sub poză -->
+                <div class="gallery-thumbs" id="thumbStrip">
+                    <!-- poza principală ca primul thumb -->
+                    <img src="{{ car.Image.url }}"
+                         class="thumb active-thumb"
+                         onclick="changeImage(this)">
+
+                    {% for img in images %}
+                        <img src="{{ img.imagine.url }}"
+                             class="thumb"
+                             onclick="changeImage(this)">
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ===== RIGHT: SUMMARY ===== -->
+        <div class="card">
+            <h1 class="summary-title">{{ car.Name }}</h1>
+
+            <div class="summary-sub">
+                {{ car.Fuel }} • {{ car.Transmission }} • {{ car.Power }} CP
+            </div>
+
+            <div class="summary-pills">
+                <span class="pill">{{ car.Year }}</span>
+                <span class="pill">{{ car.Km }} km</span>
+                <span class="pill">{{ car.Fuel }}</span>
+                <span class="pill">{{ car.Transmission }}</span>
+            </div>
+
+            <!-- PRICE WITH DISCOUNT -->
+            <div class="price-box">
+                {% with new_price=car.Price|add:"-3000" %}
+                    {% if new_price > 0 %}
+                        {{ new_price }} €
+                        <span class="old-price">{{ car.Price }} €</span>
+                    {% else %}
+                        {{ car.Price }} €
+                    {% endif %}
+                {% endwith %}
+            </div>
+
+            <div class="actions">
+                <a href="#" class="btn-big">Cere ofertă</a>
+                <button class="btn-line">Trimite pe email</button>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ===================== AVANTAJE + CONFIGURATOR ===================== -->
+    <div class="mid-grid" style="display:grid;grid-template-columns:1.2fr 1fr;gap:28px;margin-top:20px;">
+
+        <!-- ===== AVANTAJE ===== -->
+        <div class="card">
+            <h2 style="margin-bottom:14px;">Avantaje AutoMarket</h2>
+
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;">
+
+                <div style="background:rgba(255,255,255,.05);padding:12px;border-radius:14px;">
+                    <strong style="color:#ffdd55;">Garanție inclusă</strong>
+                    12 luni garanție pentru motor + cutie.
+                </div>
+
+                <div style="background:rgba(255,255,255,.05);padding:12px;border-radius:14px;">
+                    <strong style="color:#ffdd55;">Revizie completă</strong>
+                    Ulei + filtre + verificare generală gratuit.
+                </div>
+
+                <div style="background:rgba(255,255,255,.05);padding:12px;border-radius:14px;">
+                    <strong style="color:#ffdd55;">Istoric verificat</strong>
+                    Fără accidente majore, acte în regulă.
+                </div>
+
+                <div style="background:rgba(255,255,255,.05);padding:12px;border-radius:14px;">
+                    <strong style="color:#ffdd55;">Buy-back</strong>
+                    Primești oferta instant pentru mașina ta.
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ===== CONFIGURATOR FINANCIAR ===== -->
+        <div class="card">
+            <h2 style="margin-bottom:12px;">Simulare financiară</h2>
+            <p style="opacity:.8;margin-bottom:12px;">Calculează rapid rata lunară estimată</p>
+
+            <label>Preț mașină (€)</label>
+            <input type="number" id="finPrice" value="{{ car.Price }}" style="width:100%;padding:7px 10px;margin-bottom:12px;border-radius:8px;background:#0a0f1d;border:1px solid rgba(255,255,255,.2);color:white;">
+
+            <label>Avans (%)</label>
+            <select id="finAvans" style="width:100%;padding:8px;margin-bottom:12px;border-radius:8px;background:#0a0f1d;border:1px solid rgba(255,255,255,.2);color:white;">
+                <option value="0">0%</option>
+                <option value="10">10%</option>
+                <option value="20" selected>20%</option>
+                <option value="30">30%</option>
+                <option value="50">50%</option>
+            </select>
+
+            <label>Perioadă (ani)</label>
+            <select id="finYears" style="width:100%;padding:8px;margin-bottom:12px;border-radius:8px;background:#0a0f1d;border:1px solid rgba(255,255,255,.2);color:white;">
+                <option value="3">3 ani</option>
+                <option value="4">4 ani</option>
+                <option value="5" selected>5 ani</option>
+                <option value="6">6 ani</option>
+            </select>
+
+            <label>Dobândă anuală (%)</label>
+            <input id="finRate" type="number" value="8" style="width:100%;padding:7px 10px;border-radius:8px;background:#0a0f1d;border:1px solid rgba(255,255,255,.2);color:white;">
+
+            <button type="button" onclick="calcFinance()" class="btn-line" style="margin-top:10px;">Calculează rata</button>
+
+            <div id="finResult" style="margin-top:12px;font-size:15px;">
+                Rata lunară va apărea aici.
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- ===================== MASINI SIMILARE ===================== -->
+    <h2 style="margin-top:50px;margin-bottom:12px;">Mașini similare</h2>
+
+    <div style="display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;" id="fuelChips">
+        <button class="chip active" data-fuel="all" onclick="filterSimilar(this)">Toate</button>
+        <button class="chip" data-fuel="Diesel" onclick="filterSimilar(this)">Diesel</button>
+        <button class="chip" data-fuel="Benzina" onclick="filterSimilar(this)">Benzină</button>
+        <button class="chip" data-fuel="Hibrid" onclick="filterSimilar(this)">Hibrid</button>
+        <button class="chip" data-fuel="Electric" onclick="filterSimilar(this)">Electric</button>
+    </div>
+
+    <div class="similar-grid" id="similarGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:18px;">
+        {% for s in similar %}
+        <div class="similar-card" data-fuel="{{ s.Fuel }}">
+            <img src="{{ s.Image.url }}" style="width:100%;height:180px;object-fit:cover;">
+            <div class="similar-body">
+                <div class="similar-title">{{ s.Brand }} {{ s.Model }}</div>
+                <div class="similar-meta">{{ s.Year }} • {{ s.Km }} km • {{ s.Fuel }}</div>
+                <div class="similar-price" style="color:#ffdd55;font-weight:700;margin-top:4px;">{{ s.Price }} €</div>
+
+                <a href="{% url 'car_details' s.id %}" class="similar-link" style="color:#a8c5ff;font-size:12px;margin-top:6px;display:inline-block;">
+                    Vezi detalii →
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</div> <!-- end page -->
+
+
+<!-- ===================== FULLSCREEN OVERLAY ===================== -->
+<div id="fsOverlay" style="
+    position:fixed;inset:0;background:rgba(0,0,0,.95);
+    display:none;justify-content:center;align-items:center;flex-direction:column;
+    z-index:9999;
+">
+    <div style="color:white;font-size:30px;position:absolute;top:20px;right:30px;cursor:pointer;"
+         onclick="closeFs()">✕</div>
+
+    <img id="fsImg" style="max-width:90vw;max-height:80vh;border-radius:16px;box-shadow:0 0 40px rgba(0,0,0,.7);">
+
+    <div style="position:absolute;left:30px;top:50%;font-size:40px;color:white;cursor:pointer;"
+         onclick="fsPrev()">❮</div>
+
+    <div style="position:absolute;right:30px;top:50%;font-size:40px;color:white;cursor:pointer;"
+         onclick="fsNext()">❯</div>
+</div>
+
+{% endblock %}
+
+
+
+{% block scripts %}
+<script>
+/* ===========================
+      THUMB → MAIN
+=========================== */
+function changeImage(el) {
+    const main = document.getElementById("mainImg");
+    main.src = el.src;
+
+    document.querySelectorAll(".gallery-thumbs img")
+        .forEach(i => i.classList.remove("active-thumb"));
+
+    el.classList.add("active-thumb");
+}
+
+/* ===========================
+      FULLSCREEN VIEWER
+=========================== */
+let fsImages = [];
+let fsIndex = 0;
+
+function collectFsImages() {
+    fsImages = Array.from(document.querySelectorAll(".gallery-thumbs img"))
+        .map(i => i.src);
+}
+
+function openFs() {
+    collectFsImages();
+    const current = document.getElementById("mainImg").src;
+    fsIndex = fsImages.indexOf(current);
+    if (fsIndex < 0) fsIndex = 0;
+
+    document.getElementById("fsImg").src = fsImages[fsIndex];
+    document.getElementById("fsOverlay").style.display = "flex";
+}
+
+function closeFs() {
+    document.getElementById("fsOverlay").style.display = "none";
+}
+
+function fsPrev() {
+    if (!fsImages.length) collectFsImages();
+    fsIndex = (fsIndex - 1 + fsImages.length) % fsImages.length;
+    document.getElementById("fsImg").src = fsImages[fsIndex];
+    document.getElementById("mainImg").src = fsImages[fsIndex];
+}
+
+function fsNext() {
+    if (!fsImages.length) collectFsImages();
+    fsIndex = (fsIndex + 1) % fsImages.length;
+    document.getElementById("fsImg").src = fsImages[fsIndex];
+    document.getElementById("mainImg").src = fsImages[fsIndex];
+}
+
+/* ESC closes FS */
+document.addEventListener("keydown", e => {
+    if (e.key === "Escape") closeFs();
+});
+
+/* ===========================
+      FINANCE CALCULATOR
+=========================== */
+function calcFinance() {
+    const price = parseFloat(document.getElementById("finPrice").value || 0);
+    const avans = parseFloat(document.getElementById("finAvans").value || 0) / 100;
+    const years = parseInt(document.getElementById("finYears").value || 1);
+    const rate = parseFloat(document.getElementById("finRate").value || 0) / 100;
+
+    const financed = price * (1 - avans);
+    const months = years * 12;
+    const monthlyRate = rate / 12;
+
+    let m;
+    if (monthlyRate > 0) {
+        m = financed * (monthlyRate * Math.pow(1 + monthlyRate, months)) /
+                        (Math.pow(1 + monthlyRate, months) - 1);
+    } else {
+        m = financed / months;
+    }
+
+    document.getElementById("finResult").innerHTML =
+        "<strong>" + m.toFixed(2) + " € / lună</strong>";
+}
+
+/* ===========================
+      SIMILAR FILTER
+=========================== */
+function filterSimilar(btn) {
+    const fuel = btn.dataset.fuel;
+
+    document.querySelectorAll("#fuelChips .chip").forEach(c => c.classList.remove("active"));
+    btn.classList.add("active");
+
+    document.querySelectorAll("#similarGrid .similar-card").forEach(card => {
+        if (fuel === "all" || card.dataset.fuel === fuel)
+            card.style.display = "";
+        else
+            card.style.display = "none";
+    });
+}
+
+/* ===========================
+      FAVORITE POST REQUEST
+=========================== */
+function toggleFavorite(carId) {
+    fetch(`/favorite/${carId}/toggle/`, {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": "{{ csrf_token }}",
+            "X-Requested-With": "XMLHttpRequest"
+        }
+    })
+    .then(r => r.json())
+    .then(data => {
+        console.log("fav:", data);
+    });
+}
+
+</script>
+{% endblock %}

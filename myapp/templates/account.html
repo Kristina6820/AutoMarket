@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Contul meu | AutoMarket{% endblock %}
+
+{% block content %}
+<div style="max-width:1200px;margin:40px auto;padding:0 20px;">
+    <h1 style="font-size:32px;font-weight:800;margin-bottom:20px;">Salut, {{ request.user.first_name|default:request.user.username }}!</h1>
+
+    <h2 style="font-size:22px;margin:20px 0;">Mașinile tale favorite</h2>
+    <div class="featured-grid">
+        {% for c in favorites %}
+        <a href="{% url 'car_details' c.id %}" class="car-card-home">
+            <img src="{{ c.main_image.url }}" alt="{{ c.brand }} {{ c.model }}">
+            <div class="car-info-home">
+                <h4>{{ c.brand }} {{ c.model }}</h4>
+                <div class="meta">{{ c.Year }} • {{ c.Km }} km • {{ c.Fuel }}</div>
+                <div class="price">{{ c.Price }} €</div>
+            </div>
+        </a>
+        {% empty %}
+        <p>Nu ai încă favorite.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
