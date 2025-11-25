@@ -226,8 +226,8 @@
 </a>
 
     <ul>
+        <li><a href="{% url 'home' %}">Acasă</a></li>
         <li><a href="{% url 'cars' %}">Mașini</a></li>
-        <li><a href="{% url 'home' %}">Home</a></li>
         <li><a href="{% url 'add_car' %}">Adaugă</a></li>
 
         {% if user.is_authenticated %}

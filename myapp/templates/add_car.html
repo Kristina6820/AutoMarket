@@ -1,50 +1,240 @@
 {% extends "base.html" %}
+{% load static %}
+
 {% block content %}
 
+<style>
+.add-page {
+    max-width: 1100px;
+    margin: 50px auto;
+    color: #f4f6ff;
+    animation: fadeIn .5s ease;
+}
 
-<h2>Adaugă o mașină</h2>
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px);}
+    to   { opacity: 1; transform: translateY(0);}
+}
 
-{% if error %}
-<p style="color:red;">{{ error }}</p>
-{% endif %}
+.add-card {
+    background: linear-gradient(135deg, #111829, #0b0f1c);
+    padding: 35px;
+    border-radius: 22px;
+    box-shadow: 0 20px 45px rgba(0,0,0,.55);
+    backdrop-filter: blur(6px);
+}
 
-<form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
+.add-title {
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 25px;
+}
 
-    <label>Nume mașină</label>
-    <input type="text" name="name" required>
+/* GRID */
+.add-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 22px;
+}
 
-    <label>An</label>
-    <input type="number" name="year">
+/* LABEL */
+.add-card label {
+    font-size: 14px;
+    font-weight: 600;
+    opacity: .85;
+}
 
-    <label>Km</label>
-    <input type="text" name="km">
+/* INPUTS */
+.add-card input,
+.add-card textarea,
+.add-card select {
+    width: 100%;
+    margin-top: 6px;
+    margin-bottom: 14px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: #0a0f1d;
+    border: 1px solid rgba(255,255,255,.2);
+    color: #fff;
+    transition: .2s;
+    font-size: 14px;
+}
 
-    <label>Combustibil</label>
-    <input type="text" name="fuel">
+.add-card input:focus,
+.add-card textarea:focus {
+    border-color: #ffcc00;
+    box-shadow: 0 0 0 2px rgba(255,204,0,0.35);
+    outline: none;
+}
 
-    <label>Cutie de viteze</label>
-    <input type="text" name="transmission">
+/* FILE UPLOAD */
+.upload-box {
+    padding: 18px;
+    border-radius: 16px;
+    border: 2px dashed rgba(255,255,255,.25);
+    background: rgba(255,255,255,0.04);
+    cursor: pointer;
+    text-align: center;
+    transition: .2s;
+}
 
-    <label>Putere</label>
-    <input type="number" name="horsepower">
+.upload-box:hover {
+    border-color: #ffcc00;
+    background: rgba(255,204,0,0.08);
+}
 
-    <label>Tip</label>
-    <input type="text" name="type">
+.upload-box span {
+    opacity: .75;
+    font-size: 14px;
+}
 
-    <label>Preț</label>
-    <input type="text" step="0.01" name="price">
+/* SUBMIT BUTTON */
+.add-btn {
+    width: 100%;
+    background: linear-gradient(90deg,#ffdf5a,#ffb800);
+    padding: 15px;
+    border-radius: 14px;
+    border: none;
+    font-size: 17px;
+    font-weight: 800;
+    margin-top: 20px;
+    cursor: pointer;
+    color: #000;
+    box-shadow: 0 12px 25px rgba(255,200,0,.4);
+    transition: .25s;
+}
 
-    <label>Descriere</label>
-    <textarea name="description"></textarea>
+.add-btn:hover {
+    transform: translateY(-2px);
+}
 
-    <label>Poză principală</label>
-    <input type="file" name="image">
+/* IMAGE PREVIEW */
+.preview {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+}
 
-    <label>Poză secundare</label>
-    <input type="file" name="poze" multiple>
+.preview img {
+    width: 110px;
+    height: 75px;
+    border-radius: 12px;
+    object-fit: cover;
+    border: 2px solid rgba(255,255,255,.2);
+}
+</style>
 
-    <button type="submit">Adaugă mașina</button>
-</form>
+<div class="add-page">
+
+    <div class="add-card">
+
+        <h2 class="add-title">Adaugă o mașină</h2>
+
+        {% if error %}
+        <p style="color:#ff5555; font-weight:600;">{{ error }}</p>
+        {% endif %}
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="form-grid">
+
+                <div>
+                    <label>Nume mașină</label>
+                    <input type="text" name="name" required>
+                </div>
+
+                <div>
+                    <label>Putere (CP)</label>
+                    <input type="number" name="horsepower">
+                </div>
+
+                <div>
+                    <label>An</label>
+                    <input type="number" name="year">
+                </div>
+
+                <div>
+                    <label>Tip</label>
+                    <input type="text" name="type">
+                </div>
+
+                <div>
+                    <label>Kilometrii</label>
+                    <input type="text" name="km">
+                </div>
+
+                <div>
+                    <label>Preț (€)</label>
+                    <input type="number" step="0.01" name="price">
+                </div>
+
+                <div>
+                    <label>Combustibil</label>
+                    <input type="text" name="fuel">
+                </div>
+
+                <div>
+                    <label>Cutie de viteze</label>
+                    <input type="text" name="transmission">
+                </div>
+
+                <div class="full-row">
+                    <label>Descriere</label>
+                    <textarea name="description"></textarea>
+                </div>
+
+            </div>    
+
+            <!-- MAIN IMAGE -->
+            <label>Poză principală</label>
+            <div class="upload-box" onclick="document.getElementById('mainImg').click()">
+                <span>Încarcă imagine principală</span>
+            </div>
+            <input type="file" id="mainImg" name="image" style="display:none;" onchange="showMainPreview(event)">
+            <div class="preview" id="mainPreview"></div>
+
+            <!-- SECONDARY IMAGES -->
+            <label>Poză secundare</label>
+            <div class="upload-box" onclick="document.getElementById('secImgs').click()">
+                <span>Încarcă imagini secundare (multiple)</span>
+            </div>
+            <input type="file" id="secImgs" name="poze" multiple style="display:none;" onchange="showSecPreview(event)">
+            <div class="preview" id="secPreview"></div>
+
+            <button type="submit" class="add-btn">Adaugă mașina</button>
+        </form>
+
+    </div>
+</div>
+
+<script>
+/* MAIN IMAGE PREVIEW */
+function showMainPreview(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const img = document.createElement("img");
+    img.src = URL.createObjectURL(file);
+
+    const box = document.getElementById("mainPreview");
+    box.innerHTML = "";
+    box.appendChild(img);
+}
+
+/* SECONDARY IMAGES PREVIEW */
+function showSecPreview(e) {
+    const files = e.target.files;
+    const box = document.getElementById("secPreview");
+    box.innerHTML = "";
+
+    Array.from(files).forEach(f => {
+        const img = document.createElement("img");
+        img.src = URL.createObjectURL(f);
+        box.appendChild(img);
+    });
+}
+</script>
 
 {% endblock %}

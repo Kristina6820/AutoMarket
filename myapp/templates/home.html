@@ -403,19 +403,6 @@
         });
     }
 
-    function toggleFav(ev, id){
-        ev.preventDefault();
-        ev.stopPropagation();
-        let favs = getFavs();
-        if (favs.includes(id)) {
-            favs = favs.filter(x => x !== id);
-        } else {
-            favs.push(id);
-        }
-        saveFavs(favs);
-        syncHearts();
-    }
-
-    document.addEventListener('DOMContentLoaded', syncHearts);
+    
 </script>
 {% endblock %}

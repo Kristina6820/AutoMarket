@@ -4,46 +4,43 @@ from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
-from .models import Car, MasinaImage, Brand, Type
+from .models import Car, MasinaImage, Favorite 
 
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.db.models import Q
-from .models import Car
 
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
 from django.shortcuts import redirect
 
-from .models import Car, Favorite
-from django.http import JsonResponse
-from .models import Favorite, Car
 
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.decorators import login_required
+
+@login_required
+def add_to_favorites(request, car_id):
+    if request.method != "POST":
+        return JsonResponse({"error": "invalid method"}, status=400)
+
+    car = get_object_or_404(Car, id=car_id)
+    fav, created = Favorite.objects.get_or_create(user=request.user, car=car)
+
+    if created:
+        return JsonResponse({"status": "added"})
+    else:
+        fav.delete()
+        return JsonResponse({"status": "removed"})
+
 
 
 @login_required
 def account(request):
-    favorites = Favorite.objects.filter(user=request.user)
-    return render(request, "account.html", {"favorites": favorites})
+    favorites_qs = Favorite.objects.filter(user=request.user).select_related('car')
+    cars = [fav.car for fav in favorites_qs]
+
+    return render(request, "account.html", {"favorites": cars})
 
 
 
-@login_required
-def toggle_favorite(request, car_id):
-    if not request.user.is_authenticated:
-        return JsonResponse({"error": "unauthorized"}, status=403)
 
-    car = Car.objects.get(id=car_id)
-    fav, created = Favorite.objects.get_or_create(user=request.user, car=car)
-
-    if not created:
-        fav.delete()
-        return JsonResponse({"favorited": False})
-
-    return JsonResponse({"favorited": True})
 
 
 @login_required
@@ -159,6 +156,7 @@ def car_details(request, car_id):
     ).exclude(pk=car.pk)[:8]
 
     images = MasinaImage.objects.filter(masina=car)
+    
 
     return render(request, "car_details.html", {
         "car": car,
@@ -170,46 +168,40 @@ def car_details(request, car_id):
 # ADAUGĂ MAȘINĂ
 @login_required
 def add_car(request):
-    types = Type.objects.all()  # populate select
     if request.method == "POST":
-        km_raw = request.POST.get("km", "").strip()
-        km_clean = km_raw.replace(".", "").replace(",", "")
 
-        try:
-            km = float(km_clean)
-        except ValueError:
-            return render(request, "add_car.html", {"error": "Km invalid."})
-            
-        
-
-        # Creează Car
+        # 1. Creăm mașina
         car = Car.objects.create(
-            Name=request.POST.get('name'),
-            Year=request.POST.get('year') or 2010,
-            Km=request.POST.get('km') or 0,
-            Fuel=request.POST.get('fuel') or "Diesel",
-            Transmission=request.POST.get('transmission') or "Manuala",
-            HorsePower=request.POST.get('horsepower') or 90,
-            Price=request.POST.get('price') or 0,
-            Description=request.POST.get('description') or "",
-            Image=request.FILES.get('image'),
-            Power = request.POST.get('hp'),
-            Tractor = request.POST.get('tractor')
+            Name=request.POST["name"],
+            Description=request.POST["description"],
+            Price=request.POST["price"],
+            Type=request.POST["type"],
+            Image=request.FILES["image"],
+            Year=request.POST["year"],
+            Km=request.POST["km"],
+            Fuel=request.POST["fuel"],
+            Transmission=request.POST["transmission"],
+            HorsePower=request.POST["horsepower"],
         )
 
-        
-
-        # Salvează poze multiple
-        for img in request.FILES.getlist('imagini'):
+        # 2. Salvăm pozele secundare
+        for f in request.FILES.getlist("poze"):
             MasinaImage.objects.create(
                 masina=car,
-                imagine=img
+                imagine=f
             )
 
         return redirect("cars")
 
-    return render(request, "add_car.html", {"types": types})
+    return render(request, "add_car.html")
 
+@login_required
+def add_to_favorites(request, car_id):
+    
+
+    car = get_object_or_404(Car, id=car_id)
+    Favorite.objects.get_or_create(user=request.user, car=car)
+    return redirect("car_details", car_id=car.id)
     
 
 
@@ -223,13 +215,15 @@ def login_user(request):
 
         user = authenticate(request, email=email, password=password)
 
-        if user:
+        if user is not None:
             login(request, user)
             return redirect("home")
         else:
-            return render(request, "login.html", {"error": "Credențiale invalide."})
-    else:
-        return render(request, "login.html")
+            messages.error(request, "Email sau parolă incorectă. Mai încearcă o dată.")
+            return render(request, "login.html", {"error": "Email sau parolă incorectă. Mai încearcă o dată."})
+
+    return render(request, "login.html")
+
 
 
 
@@ -291,5 +285,3 @@ def dashboard(request):
 
 
 
-def account(request):
-    return render(request, "account.html")

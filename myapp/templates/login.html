@@ -101,6 +101,20 @@
     <div class="login-card">
         <h2 class="login-title">Autentificare</h2>
 
+        {% if error %}
+        <div style="
+            background:#dd0a0a;
+            color:white;
+            padding:12px 16px;
+            border-radius:10px;
+            margin-bottom:15px;
+            font-weight:600;
+        ">
+            {{ error }}
+        </div>
+        {% endif %}
+
+
         <form method="POST" action="">
             {% csrf_token %}
 
@@ -115,6 +129,8 @@
             </div>
 
             <button type="submit" class="submit-btn">Intră în cont</button>
+
+        
         </form>
 
         <p class="register-link">Nu ai cont? <a href="{% url 'register' %}">Creează unul</a></p>

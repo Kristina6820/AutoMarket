@@ -42,7 +42,7 @@ class Migration(migrations.Migration):
                 ('Fuel', models.CharField(default='Diesel', max_length=20)),
                 ('Transmission', models.CharField(default='Manuala', max_length=20)),
                 ('HorsePower', models.IntegerField(default=90)),
-                ('Power', models.IntegerField(blank=True, default=0, null=True)),
+                ('Power', models.IntegerField(blank=True, default=20, null=True)),
                 ('Tractor', models.CharField(blank=True, max_length=20, null=True)),
             ],
         ),

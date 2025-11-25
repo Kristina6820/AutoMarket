@@ -1,5 +1,4 @@
 from django.db.models import * 
-from django.contrib.auth.models import User
 from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import AbstractUser
@@ -7,7 +6,14 @@ from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
 
+class User(AbstractUser):
+    FullName = models.CharField(max_length=50, blank=True, null=True)
+    Phone = models.CharField(max_length=50, blank=True, null=True)
 
+    email = models.EmailField(unique=True)
+
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = ["username"]
 
 
 class Brand(Model):
@@ -31,7 +37,7 @@ class Car(Model):
     Fuel = CharField(max_length=20, default="Diesel")  
     Transmission = CharField(max_length=20, default="Manuala")  
     HorsePower = IntegerField(default=90)   
-    Power = IntegerField(default=20, null=True, blank=True)
+    Power = IntegerField(null=True, blank=True)
     Tractor = CharField(max_length=20, null=True, blank=True) 
 
 
@@ -39,12 +45,12 @@ def get_absolute_url(self):
         from django.urls import reverse
         return reverse('car_details', args=[self.id])
 
-class Favorite(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    car = models.ForeignKey(Car, on_delete=models.CASCADE)
+class Favorite(Model):
+    user = ForeignKey(User, on_delete=CASCADE)
+    car = ForeignKey(Car, on_delete=CASCADE)
 
-    class Meta:
-        unique_together = ("user", "car")
+    #class Meta:
+    #unique_together = ("user", "car")
 
     def __str__(self):
         return f"{self.user} ❤ {self.car}"
@@ -57,14 +63,7 @@ class MasinaImage(Model):
     imagine = ImageField(upload_to="cars/")
 
 
-class User(AbstractUser):
-    FullName = models.CharField(max_length=50, blank=True, null=True)
-    Phone = models.CharField(max_length=50, blank=True, null=True)
 
-    email = models.EmailField(unique=True)
-
-    USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["username"]
    
 
 

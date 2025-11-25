@@ -29,10 +29,10 @@ urlpatterns = [
     path("logout/", logout_user, name="logout"),
     path('register/', register_user, name="register"),
     path('dashboard/', dashboard, name="dashboard"),
-    path('account/', account, name = 'account'),
+    path('account/', account, name='account'),
     path("api/search-cars/", search_cars, name="search_cars_api"),
-    path("favorite/<int:car_id>/", toggle_favorite, name="toggle_favorite"),
-    path("cont/favorite/", favorite_list, name="favorite_list"),
+    path("add-to-favorites/<int:car_id>/", add_to_favorites, name="add_to_favorites"),
+
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
