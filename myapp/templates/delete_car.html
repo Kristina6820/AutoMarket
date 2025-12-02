@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block title %}Ștergere mașină | AutoMarket{% endblock %}
+
+{% block content %}
+<style>
+    .delete-wrapper {
+        max-width: 700px;
+        margin: 80px auto;
+        padding: 30px;
+        background: linear-gradient(145deg, #111622, #0c111c);
+        border-radius: 24px;
+        box-shadow: 0 20px 45px rgba(0,0,0,.55);
+        color: #fff;
+        animation: fadeIn .4s ease;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .delete-title {
+        font-size: 28px;
+        font-weight: 800;
+        margin-bottom: 12px;
+    }
+
+    .delete-warning {
+        background: rgba(255, 82, 82, 0.15);
+        border: 1px solid rgba(255, 82, 82, 0.4);
+        padding: 14px;
+        border-radius: 14px;
+        margin-bottom: 18px;
+        font-size: 15px;
+        line-height: 1.5;
+    }
+
+    .delete-actions {
+        display: flex;
+        gap: 14px;
+        margin-top: 20px;
+    }
+
+    .btn-danger {
+        background: #ff4c4c;
+        color: #fff;
+        padding: 12px 20px;
+        border-radius: 12px;
+        font-weight: 700;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        transition: .2s;
+    }
+    .btn-danger:hover {
+        background: #ff6666;
+    }
+
+    .btn-cancel {
+        background: rgba(255,255,255,0.15);
+        padding: 12px 20px;
+        border-radius: 12px;
+        color: #fff;
+        text-decoration: none;
+        font-weight: 600;
+        transition: .2s;
+    }
+    .btn-cancel:hover {
+        background: rgba(255,255,255,0.25);
+    }
+</style>
+
+<div class="delete-wrapper">
+    <h1 class="delete-title">Ștergi mașina?</h1>
+
+    <div class="delete-warning">
+        <strong>Atenție!</strong><br>
+        Urmează să ștergi definitiv mașina:<br>
+        <strong>{{ car.Name }}</strong><br><br>
+        Această acțiune nu poate fi anulată.
+    </div>
+
+    <img src="{{ car.Image.url }}" style="width:100%;height:260px;object-fit:cover;border-radius:14px;margin-bottom:18px;">
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class="delete-actions">
+            <button type="submit" class="btn-danger">Șterge definitiv</button>
+            <a href="{% url 'car_details' car.id %}" class="btn-cancel">Renunță</a>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

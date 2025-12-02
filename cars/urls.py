@@ -32,7 +32,20 @@ urlpatterns = [
     path('account/', account, name='account'),
     path("api/search-cars/", search_cars, name="search_cars_api"),
     path("add-to-favorites/<int:car_id>/", add_to_favorites, name="add_to_favorites"),
+    path("place-order/<int:car_id>/", place_order_page, name="place_order_page"),
+    path("track-order/", track_order_page, name="track_order_page"),
+    path("track-order/<str:track>/", track_order, name="track_order"),
+    path("orders/", orders_page, name="orders_page"),
+    path("add-review/<int:car_id>/", add_review, name="add_review"),
+    path("about/", about_page, name="about"),
+    path("contact/", contact_page, name="contact"),
+    path("car/<int:car_id>/edit/", edit_car, name="edit_car"),
+    path("car/<int:car_id>/delete/", delete_car, name="delete_car"),
+    path("favorites/remove/<int:car_id>/", remove_favorite, name="remove_favorite"),
+    
 
+
+   
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

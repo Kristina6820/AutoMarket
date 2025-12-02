@@ -214,10 +214,10 @@
 
 .favorites-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 22px;
-    margin-top: 25px;
+    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+    gap: 24px;
 }
+
 
 .fav-card {
     background: linear-gradient(145deg, #111622, #0c111c);
@@ -349,7 +349,8 @@
 
     <div class="account-hero">
         <div class="account-hero-left">
-            <h1>Salut, {{ request.user.first_name|default:request.user.username }}!</h1>
+            <h1>Salut, {{ request.user.FullName|default:request.user.username }}!</h1>
+
             <p>Gestionază-ți mașinile favorite și urmărește ofertele care te interesează.</p>
             <div class="badge-pill">
                 <span class="badge-dot"></span>
@@ -391,19 +392,48 @@
 
     {% if favorites %}
         <div class="favorites-grid">
-            <ul id="favorites-list">
+            
                 {% for car in favorites %}
-                <div class="fav-card">
-                    <img src="{{ car.Image.url }}" class="fav-img">
-                    <div class="fav-info">
-                        <h3>{{ car.Name }}</h3>
-                        <p>{{ car.Year }} • {{ car.Km }} km • {{ car.Fuel }}</p>
-                        <a href="{% url 'car_details' car.id %}">Vezi detalii →</a>
+                <div class="car-card-home" style="background:#0a0f1c;border-radius:20px;overflow:hidden;box-shadow:0 10px 25px rgba(0,0,0,.45);margin-bottom:25px;">
+                    
+                    <a href="{% url 'car_details' car.id %}">
+                        <img src="{{ car.Image.url }}" 
+                            style="width:100%;height:240px;object-fit:cover;">
+                    </a>
+
+                    <div style="padding:18px;">
+
+                        <span style="background:#ffdd55;padding:4px 10px;border-radius:8px;
+                                    font-size:12px;font-weight:700;color:#000;">
+                            Rulat
+                        </span>
+
+                        <h2 style="margin:10px 0 6px;font-size:20px;font-weight:800;">
+                            {{ car.Name }}
+                        </h2>
+
+                        <div style="opacity:.8;margin-bottom:10px;font-size:14px;">
+                            {{ car.Year }} • {{ car.Km }} km • {{ car.Fuel }}
+                        </div>
+
+                        <div style="color:#ffdd55;font-size:22px;font-weight:800;margin-bottom:12px;">
+                            {{ car.Price }} €
+                        </div>
+
+                        <a href="{% url 'car_details' car.id %}" 
+                        style="color:#b5c7ff;font-size:14px;text-decoration:none;">
+                            Vezi detalii →
+                        </a>
+
+                        <a href="{% url 'remove_favorite' car.id %}"
+                        style="float:right;color:#ff6b6b;font-size:18px;text-decoration:none;">
+                            Sterge ❤
+                        </a>   
+                        
                     </div>
+
                 </div>
                 {% endfor %}
-
-            </ul>
         </div>
     {% else %}
         <div class="fav-empty">
@@ -415,6 +445,32 @@
             </a>
         </div>
     {% endif %}
+
+
+<h2 style="margin-top:40px;">Comenzile tale</h2>
+
+{% if orders %}
+<div class="favorites-grid">
+    {% for o in orders %}
+    <div class="fav-card">
+        <img src="{{ o.Item.Image.url }}" class="fav-img">
+
+        <div class="fav-info">
+            <h3>{{ o.Item.Name }}</h3>
+            <p>{{ o.CreatedAt|date:"d.m.Y" }}</p>
+            <p>{{ o.Method }} • {{ o.Quantity }} buc</p>
+
+            <a style="color:#a5b4fc;" href="{% url 'track_order' o.Shipment.TrackNumber %}">
+                Urmărește comanda →
+            </a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<p style="opacity:.6;margin-top:10px;">Nu ai comenzi încă.</p>
+{% endif %}
+
 
 </div>
 

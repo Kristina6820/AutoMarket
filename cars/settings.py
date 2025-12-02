@@ -125,10 +125,19 @@ LOGIN_REDIRECT_URL = 'home'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-USERNAME_FIELD = "email"
-REQUIRED_FIELDS = ["username"]
-
 AUTH_USER_MODEL = "myapp.User"
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.mail.yahoo.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+EMAIL_HOST_USER = "yrymyakrystyna@yahoo.com"
+EMAIL_HOST_PASSWORD = "rgiuoyfwhtxlqhbw"
+
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+
 
 
 # Default primary key field type

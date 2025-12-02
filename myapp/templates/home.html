@@ -235,13 +235,8 @@
 
 {% block content %}
 
-<!-- HERO CU VIDEO + LIVE SEARCH -->
-<div class="hero">
-    <video autoplay muted loop playsinline>
-        <!-- Poți înlocui cu un video propriu în static/ -->
-        <source src="https://cdn.coverr.co/videos/coverr-driving-on-an-empty-road-8125/1080p.mp4" type="video/mp4">
-    </video>
 
+<div class="hero">
     <div class="hero-overlay">
         <h1>Găsește mașina perfectă</h1>
         <p>Mașini premium, verificate, garantate — tot ce ai nevoie într-un singur loc.</p>
@@ -255,21 +250,7 @@
     </div>
 </div>
 
-<!-- 3D CAROUSEL CU MASINI FEATURED -->
-<div class="carousel-3d-wrapper">
-    <div class="carousel-3d">
-        {% for c in featured %}
-        <div class="carousel-item">
-            <img src="{{ c.main_image.url }}" alt="{{ c.brand }} {{ c.model }}">
-            <div>
-                <strong>{{ c.brand }} {{ c.model }}</strong><br>
-                {{ c.Year }} • {{ c.Km }} km • {{ c.Fuel }}<br>
-                <span style="color:var(--accent);font-weight:700;">{{ c.Price }} €</span>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-</div>
+
 
 <!-- AVANTAJE -->
 <div class="advantages">
@@ -363,9 +344,22 @@
             .catch(() => { box.style.display='none'; });
     }
 
-    function triggerSearch() {
-        doSearch(input.value);
+    
+function triggerSearch() {
+    const q = document.getElementById("liveSearch").value;
+    if (q.trim() !== "") {
+        window.location.href = `/cars/?search=${encodeURIComponent(q)}`;
     }
+}
+
+document.getElementById("liveSearch").addEventListener("keypress", function(e) {
+    if (e.key === "Enter") {
+        triggerSearch();
+    }
+});
+
+
+
 
     input.addEventListener('input', (e) => {
         doSearch(e.target.value);

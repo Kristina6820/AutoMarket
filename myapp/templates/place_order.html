@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+{% block title %}Finalizare comandă{% endblock %}
+
+{% block extra_head %}
+<style>
+.order-wrapper {
+    max-width: 650px;
+    margin: 60px auto;
+    padding: 0 20px;
+    animation: fadeIn .5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.order-card {
+    background: linear-gradient(145deg, #0b0f1a, #131a2c);
+    padding: 35px;
+    border-radius: 22px;
+    box-shadow: 0 20px 45px rgba(0,0,0,.55);
+}
+
+.order-title {
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 18px;
+}
+
+.order-item {
+    background: rgba(255,255,255,0.04);
+    padding: 18px;
+    border-radius: 16px;
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.order-item img {
+    width: 120px;
+    height: 80px;
+    border-radius: 12px;
+    object-fit: cover;
+}
+
+.order-detail {
+    font-size: 15px;
+    color: #dbe2ff;
+}
+
+.order-form label {
+    margin-top: 12px;
+    display: block;
+    font-size: 14px;
+    opacity: .8;
+    font-weight: 600;
+}
+
+.order-form input,
+.order-form select {
+    width: 100%;
+    padding: 12px;
+    margin-top: 6px;
+    background: #0e1320;
+    border: 1px solid rgba(255,255,255,.15);
+    border-radius: 12px;
+    color: #fff;
+}
+
+.order-btn {
+    width: 100%;
+    margin-top: 25px;
+    padding: 14px;
+    border-radius: 14px;
+    background: linear-gradient(90deg, #ffd447, #ffae00);
+    color: #000;
+    font-weight: 800;
+    border: none;
+    cursor: pointer;
+    transition: .2s;
+    box-shadow: 0 12px 25px rgba(255,200,0,.35);
+    font-size: 17px;
+}
+
+.order-btn:hover {
+    transform: translateY(-3px);
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="order-wrapper">
+    <div class="order-card">
+
+        <h2 class="order-title">Finalizează comanda</h2>
+
+        <div class="order-item">
+            <img src="{{ car.Image.url }}">
+            <div>
+                <div class="order-detail"><strong>{{ car.Name }}</strong></div>
+                <div class="order-detail">{{ car.Year }} • {{ car.Km }} km • {{ car.Fuel }}</div>
+                <div class="order-detail" style="color: #ffd447; font-weight:700; margin-top:6px;">
+                    {{ car.Price }} €
+                </div>
+            </div>
+        </div>
+
+        <form method="POST" class="order-form">
+            {% csrf_token %}
+            
+            <label>Nume complet</label>
+            <input type="text" name="FullName" placeholder="Ion Popescu" required>
+            
+            <label>Adresă de livrare</label>
+            <input type="text" name="address" placeholder="Str. Exemplu, Nr. 10, București" required>
+            
+            <label>Număr de telefon</label> 
+            <input type="text" name="phone" placeholder="+40 712 345 678" required>
+
+            <label>Email</label>
+            <input type="email" name="email" placeholder="ion.popescu@example.com" required>
+ 
+
+            <label>Metoda de livrare</label>
+            <select name="delivery_method"> 
+                <option>Livrare standard</option>
+                <option>Livrare expres</option>
+                <option>Ridicare personală</option>
+            </select>
+            
+            
+            <label>IBAN</label>
+            <input type="text" name="iban" placeholder="RO49AAAA1B31007593840000" required>
+
+            <label>Metodă de plată</label>
+            <select name="payment_method" required>
+                <option>Transfer bancar</option>
+                <option>Cash</option>
+                <option>Rate</option>
+            </select>
+
+            <button class="order-btn">Plasează comanda</button>
+        </form>
+
+    </div>
+</div>
+
+{% endblock %}
+

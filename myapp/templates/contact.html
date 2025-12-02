@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% block title %}Contact | AutoMarket{% endblock %}
+
+{% block extra_head %}
+<style>
+.contact-wrap {
+    max-width: 1200px;
+    margin: 40px auto 80px;
+    padding: 0 20px;
+    font-family: Poppins, sans-serif;
+}
+
+.contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+.contact-card {
+    background: #0e1422;
+    padding: 25px;
+    border-radius: 18px;
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+}
+
+.contact-card h2 {
+    margin-bottom: 15px;
+    font-size: 26px;
+    font-weight: 700;
+    color: #ffd84f;
+}
+
+.contact-info p {
+    margin: 8px 0;
+    font-size: 15px;
+    opacity: .85;
+}
+
+form label {
+    font-size: 13px;
+    opacity: .8;
+}
+
+form input, form textarea {
+    width: 100%;
+    padding: 12px;
+    background: #0c0f18;
+    border: 1px solid rgba(255,255,255,0.1);
+    margin-bottom: 14px;
+    border-radius: 10px;
+    color: white;
+}
+
+form button {
+    width: 100%;
+    background: linear-gradient(90deg,#ffd84f,#ffb800);
+    border: none;
+    padding: 14px;
+    font-size: 16px;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.map-box {
+    margin-top: 25px;
+    width: 100%;
+    height: 350px;
+    border-radius: 18px;
+    overflow: hidden;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+
+<div class="contact-wrap">
+
+    <div class="contact-grid">
+
+        <!-- LEFT: CONTACT FORM -->
+        <div class="contact-card">
+            <h2>Trimite-ne un mesaj</h2>
+
+            {% if success %}
+                <p style="color:#00ff88;font-weight:600;">Mesaj trimis cu succes!</p>
+            {% endif %}
+
+            <form method="POST">
+                {% csrf_token %}
+                <input type="text" name="name" placeholder="Numele tău" required>
+                <input type="email" name="email" placeholder="Email" required>
+                <input type="text" name="subject" placeholder="Subiect">
+                <textarea name="message" rows="5" placeholder="Mesajul tău..." required></textarea>
+
+                <button type="submit">Trimite mesaj</button>
+            </form>
+        </div>
+
+        <!-- RIGHT: INFO -->
+        <div class="contact-card">
+            <h2>Informații Contact</h2>
+
+            <div class="contact-info">
+                <p>📍 Str. Ștefan cel Mare 25, Iași</p>
+                <p>📞 0745 234 123</p>
+                <p>✉ yrymyakrystyna@yahoo.com</p>
+                <p>🕒 Luni–Vineri 09:00–19:00</p>
+                <p>🕒 Sâmbătă 09:00–17:00</p>
+                <p>🕒 Duminică Închis</p>
+            </div>
+
+            <div class="map-box">
+                <iframe 
+                    src="https://maps.google.com/maps?q=iasi&t=&z=10&ie=UTF8&iwloc=&output=embed"
+                    width="100%" height="100%" style="border:0;">
+                </iframe>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

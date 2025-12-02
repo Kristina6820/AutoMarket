@@ -289,6 +289,9 @@ body {
 
                 </div>
 
+
+
+                
                 <!-- thumbs sub poză -->
                 <div class="gallery-thumbs" id="thumbStrip">
                     <!-- poza principală ca primul thumb -->
@@ -307,14 +310,13 @@ body {
             <h1 class="summary-title">{{ car.Name }}</h1>
 
             <div class="summary-sub">
-                {{ car.Fuel }} • {{ car.Transmission }} • {{ car.HorsePower }} CP
+                {{ car.Year }} • {{ car.Transmission }} • {{ car.HorsePower }} CP  
             </div>
 
             <div class="summary-pills">
-                <span class="pill">{{ car.Year }}</span>
-                <span class="pill">{{ car.Km }} km</span>
                 <span class="pill">{{ car.Fuel }}</span>
-                <span class="pill">{{ car.Transmission }}</span>
+                <span class="pill">{{ car.Type }}</span>
+                <span class="pill">{{ car.Km }} km</span>
             </div>
 
             <!-- PRICE WITH DISCOUNT -->
@@ -330,16 +332,60 @@ body {
             </div>
 
             <div class="actions">
-                <a href="#" class="btn-big">Cere ofertă</a>
-                <button class="btn-line">Trimite pe email</button>
+                <a href="{% url 'place_order_page' car.id %}" class="btn-big">Cumpără acum</a>
             </div>
 
-            <div style="margin-top:20px; font-size:15px; opacity:.85;">
-                {{ car.Description }}
+            
+
+
+            <div class="car-description">
+                {{ car.Description|linebreaks }}
             </div>
 
+            
+            <div style="margin-top:40px;">
+                <h2>Lasă o recenzie</h2>
 
-        </div>
+                <form method="POST" action="{% url 'add_review' car.id %}">
+                    {% csrf_token %}
+                    <label>Rating</label>
+                    <select name="rating">
+                        <option value="5">★★★★★</option>
+                        <option value="4">★★★★☆</option>
+                        <option value="3">★★★☆☆</option>
+                        <option value="2">★★☆☆☆</option>
+                        <option value="1">★☆☆☆☆</option>
+                    </select>
+
+                    <label>Comentariu</label>
+                    <textarea name="comment"></textarea>
+
+                    <button type="submit" class="btn-big" style="margin-top:10px;">
+                        Trimite recenzia
+                    </button>
+                </form>
+            </div>
+
+            <h3 style="margin-top:30px;">Recenzii</h3>
+
+                {% for r in reviews %}
+                <div style="background:#0d1320;padding:16px;border-radius:14px;margin-bottom:10px;">
+                    <strong>{{ r.User.username }}</strong> — 
+                    <span style="color:#ffdd55;">{{ r.Rating }}/5</span>
+                    <p>{{ r.Comment }}</p>
+                </div>
+                {% empty %}
+                <p>Nu există recenzii.</p>
+                {% endfor %}
+
+        <a href="{% url 'edit_car' car.id %}" class="btn-line">Editează mașina</a>
+        <a href="{% url 'delete_car' car.id %}" class="btn-line" style="margin-left:10px; border-color:#ff4c4c; color:#ff4c4c;">
+            Șterge mașina
+        </a>
+        <a href="{% url 'cars' %}" class="btn-line" style="margin-left:10px;">
+            Înapoi la listă
+        </a>
+    </div>
 
     </div>
 
@@ -404,42 +450,13 @@ body {
             <label>Dobândă anuală (%)</label>
             <input id="finRate" type="number" value="8" style="width:100%;padding:7px 10px;border-radius:8px;background:#0a0f1d;border:1px solid rgba(255,255,255,.2);color:white;">
 
-            <button type="button" onclick="calcFinance()" class="btn-line" style="margin-top:10px;">Calculează rata</button>
+            <button type="button" onclick="calcFinance()" class="btn-line" style="margin-top:10px;color:rgb(255, 0, 0);">Calculează rata</button>
 
             <div id="finResult" style="margin-top:12px;font-size:15px;">
                 Rata lunară va apărea aici.
             </div>
         </div>
 
-    </div>
-
-
-    <!-- ===================== MASINI SIMILARE ===================== -->
-    <h2 style="margin-top:50px;margin-bottom:12px;">Mașini similare</h2>
-
-    <div style="display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;" id="fuelChips">
-        <button class="chip active" data-fuel="all" onclick="filterSimilar(this)">Toate</button>
-        <button class="chip" data-fuel="Diesel" onclick="filterSimilar(this)">Diesel</button>
-        <button class="chip" data-fuel="Benzina" onclick="filterSimilar(this)">Benzină</button>
-        <button class="chip" data-fuel="Hibrid" onclick="filterSimilar(this)">Hibrid</button>
-        <button class="chip" data-fuel="Electric" onclick="filterSimilar(this)">Electric</button>
-    </div>
-
-    <div class="similar-grid" id="similarGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:18px;">
-        {% for s in similar %}
-        <div class="similar-card" data-fuel="{{ s.Fuel }}">
-            <img src="{{ s.Image.url }}" style="width:100%;height:180px;object-fit:cover;">
-            <div class="similar-body">
-                <div class="similar-title">{{ s.Brand }} {{ s.Model }}</div>
-                <div class="similar-meta">{{ s.Year }} • {{ s.Km }} km • {{ s.Fuel }}</div>
-                <div class="similar-price" style="color:#ffdd55;font-weight:700;margin-top:4px;">{{ s.Price }} €</div>
-
-                <a href="{% url 'car_details' s.id %}" class="similar-link" style="color:#a8c5ff;font-size:12px;margin-top:6px;display:inline-block;">
-                    Vezi detalii →
-                </a>
-            </div>
-        </div>
-        {% endfor %}
     </div>
 
 </div> <!-- end page -->

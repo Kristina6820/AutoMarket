@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html lang="ro" data-theme="dark">
 <head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}AutoMarket{% endblock %}</title>
@@ -213,6 +214,7 @@
             color: var(--accent);
             font-weight: 700;
         }
+
     </style>
 
     {% block extra_head %}{% endblock %}
@@ -229,10 +231,19 @@
         <li><a href="{% url 'home' %}">Acasă</a></li>
         <li><a href="{% url 'cars' %}">Mașini</a></li>
         <li><a href="{% url 'add_car' %}">Adaugă</a></li>
+        {% if car %}
+            <a href="{% url 'edit_car' car.id %}">Editează</a>
+        {% endif %}
+
+        <li><a href="{% url 'about' %}">Despre noi</a></li>
+        <li><a href="{% url 'contact' %}">Contact</a></li>
 
         {% if user.is_authenticated %}
+            <li><a href="{% url 'track_order_page' %}">Urmărește comanda</a></li>
+            <li><a href="{% url 'orders_page' %}">Comenzile mele</a></li>
             <li><a href="{% url 'account' %}">Contul meu</a></li>
             <li><a href="{% url 'logout' %}">Logout</a></li>
+            
         {% else %}
             <li><a href="{% url 'login' %}">Login</a></li>
             <li><a href="{% url 'register' %}">Înregistrare</a></li>

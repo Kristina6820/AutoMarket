@@ -1,0 +1,269 @@
+{% extends "base.html" %}
+{% block title %}Despre noi | AutoMarket{% endblock %}
+
+{% block extra_head %}
+<style>
+
+/* ========== HERO SECTION ========== */
+.about-hero {
+    position: relative;
+    height: 430px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(
+        135deg,
+        #0a0d18,
+        #0f1628,
+        #0a0d18
+    );
+    overflow: hidden;
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+}
+
+.about-hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: url('/static/img/showroom.jpg') center/cover no-repeat;
+    opacity: .18;
+    filter: blur(4px);
+}
+
+.about-hero h1 {
+    position: relative;
+    font-size: 54px;
+    font-weight: 900;
+    color: #fff;
+    text-shadow: 0 8px 25px rgba(0,0,0,.8);
+}
+
+.about-hero p {
+    position: relative;
+    font-size: 18px;
+    margin-top: 12px;
+    color: #cbd5f5;
+    max-width: 650px;
+    text-align: center;
+}
+
+
+/* ========== STATISTICS BAR ========== */
+.stats-bar {
+    display: flex;
+    justify-content: space-around;
+    padding: 35px 20px;
+    background: rgba(255,255,255,0.03);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.stat-box {
+    text-align: center;
+}
+
+.stat-number {
+    font-size: 36px;
+    font-weight: 900;
+    color: #ffd84f;
+}
+
+.stat-label {
+    font-size: 14px;
+    opacity: .7;
+}
+
+
+/* ========== SECTION WRAPPER ========== */
+.section {
+    max-width: 1150px;
+    margin: 60px auto;
+    padding: 0 20px;
+}
+
+
+/* ========== GLASS CARDS ========== */
+.values-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(270px,1fr));
+    gap: 26px;
+}
+
+.value-card {
+    background: rgba(255,255,255,0.04);
+    backdrop-filter: blur(14px);
+    border-radius: 20px;
+    padding: 25px;
+    border: 1px solid rgba(255,255,255,0.08);
+    transition: .35s;
+}
+
+.value-card:hover {
+    transform: translateY(-6px);
+    background: rgba(255,255,255,0.07);
+    border-color: #ffd84f;
+}
+
+.value-card h3 {
+    font-size: 20px;
+    font-weight: 800;
+    margin-bottom: 8px;
+    color: #ffd84f;
+}
+
+.value-card p {
+    opacity: .82;
+}
+
+
+/* ========== PREMIUM TIMELINE ========== */
+.timeline {
+    position: relative;
+    margin-left: 20px;
+    padding-left: 20px;
+    border-left: 3px solid #ffd84f;
+}
+
+.timeline-item {
+    margin-bottom: 30px;
+    position: relative;
+}
+
+.timeline-item::before {
+    content: "";
+    position: absolute;
+    left: -13px;
+    top: 4px;
+    width: 12px;
+    height: 12px;
+    background: #ffd84f;
+    border-radius: 50%;
+    box-shadow: 0 0 15px #ffd84f;
+}
+
+.timeline-year {
+    font-size: 20px;
+    font-weight: 700;
+    color: #ffd84f;
+}
+
+.timeline-text {
+    opacity: .8;
+    margin-top: 4px;
+}
+
+
+/* ========== WHY US PREMIUM CARDS ========== */
+.why-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(280px,1fr));
+    gap: 25px;
+}
+
+.why-card {
+    padding: 22px;
+    background: radial-gradient(circle at top, #141a2a, #0c101b);
+    border-radius: 18px;
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+.why-card strong {
+    display: block;
+    color: #ffd84f;
+    font-size: 17px;
+    margin-bottom: 6px;
+}
+
+.why-card p {
+    opacity: .75;
+}
+
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- HERO -->
+<div class="about-hero">
+    <div style="text-align:center;">
+        <h1>Despre AutoMarket</h1>
+        <p>Suntem un showroom premium dedicat pasionaților de mașini. Calitate, transparență și servicii impecabile.</p>
+    </div>
+</div>
+
+<!-- STATISTICS BAR -->
+<div class="stats-bar">
+    <div class="stat-box">
+        <div class="stat-number">10+</div>
+        <div class="stat-label">Ani experiență</div>
+    </div>
+    <div class="stat-box">
+        <div class="stat-number">1500+</div>
+        <div class="stat-label">Mașini vândute</div>
+    </div>
+    <div class="stat-box">
+        <div class="stat-number">4.9★</div>
+        <div class="stat-label">Rating clienți</div>
+    </div>
+</div>
+
+<!-- VALUES -->
+<div class="section">
+    <h2 style="font-size:28px;margin-bottom:20px;">Valorile noastre</h2>
+
+    <div class="values-grid">
+        <div class="value-card">
+            <h3>Transparență totală</h3>
+            <p>Fiecare autoturism este verificat în 120+ puncte, cu istoric complet garantat.</p>
+        </div>
+        <div class="value-card">
+            <h3>Profesionalism</h3>
+            <p>Echipa AutoMarket oferă consultanță specializată pentru orice tip de vehicul.</p>
+        </div>
+        <div class="value-card">
+            <h3>Servicii Premium</h3>
+            <p>Garanție, revizie, asistență, finanțare și buy-back într-un singur loc.</p>
+        </div>
+    </div>
+</div>
+
+<!-- TIMELINE -->
+<div class="section">
+    <h2 style="font-size:28px;margin-bottom:20px;">Povestea AutoMarket</h2>
+
+    <div class="timeline">
+        <div class="timeline-item">
+            <div class="timeline-year">2015</div>
+            <div class="timeline-text">Deschidem primul parc auto, cu doar 12 mașini în stoc.</div>
+        </div>
+        <div class="timeline-item">
+            <div class="timeline-year">2019</div>
+            <div class="timeline-text">Mutăm showroom-ul într-o locație modernă + 40 mașini premium.</div>
+        </div>
+        <div class="timeline-item">
+            <div class="timeline-year">2023</div>
+            <div class="timeline-text">Digitalizăm complet platforma și lansăm AutoMarket Online.</div>
+        </div>
+    </div>
+</div>
+
+<!-- WHY US -->
+<div class="section">
+    <h2 style="font-size:28px;margin-bottom:20px;">De ce să alegi AutoMarket?</h2>
+
+    <div class="why-cards">
+        <div class="why-card">
+            <strong>✔ Garanție premium 12 luni</strong>
+            <p>Acoperire completă motor + cutie + diagnoză profesională.</p>
+        </div>
+        <div class="why-card">
+            <strong>✔ Prețuri corecte</strong>
+            <p>Fără taxe ascunse, fără surprize neplăcute, doar transparență.</p>
+        </div>
+        <div class="why-card">
+            <strong>✔ Proces rapid</strong>
+            <p>Finanțare, asigurare și acte — rezolvate în aceeași zi.</p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
